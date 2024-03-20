@@ -1,23 +1,29 @@
+from typing import List, Dict
+from html import escape
 from dataclasses import dataclass
-import a2s
 
-URL = "https://image.gametracker.com/images/maps/160x120/cs/"
+from a2s import ainfo, aplayers
+from cachetools import TTLCache
 
-def escape_string(str):
-    str = str.replace("<", "&lt;")
-    str = str.replace(">", "&gt;")
+cache = TTLCache(maxsize=100, ttl=60)
 
-    return str
+IMAGE_URL = "https://image.gametracker.com/images/maps/160x120/cs/"
 
 @dataclass
 class Ainfo:
-    servers: list[dict]
+    servers: List[Dict]
 
     async def get_server_info(self, servers: list[dict]) -> list[dict]:
         answers = []
         for server in servers:
-            result = await a2s.ainfo((server["ip"], server["port"]))
-            players = await a2s.aplayers((server["ip"], server["port"]))
+            ip_port = (server["ip"], server["port"])
+
+            cached_info = cache.get(ip_port)
+            if cached_info:
+                result, players = cached_info
+            else:
+                result = await ainfo((server["ip"], server["port"]))
+                players = await aplayers((server["ip"], server["port"]))
 
             if result:
                 server_name: str = result.server_name
@@ -25,11 +31,11 @@ class Ainfo:
                 player_count: int = result.player_count
                 max_players: int = result.max_players
                 bot_count: int = result.bot_count
-                image_url = f"{URL}{map_name}.jpg"
+                image_url: str = f"{IMAGE_URL}{map_name}.jpg"
 
-                players_caption = "# | Nick | Score | Time"
+                players_caption = "# | Nick | Score | Time" if player_count > 0 else ""
                 for idx, player in enumerate(players):
-                    playerName = escape_string(player.name)
+                    playerName = escape(s=player.name, quote=True)
                     playerTime = player.duration
                     playerScore = player.score
                     minutes = int(playerTime // 60)
