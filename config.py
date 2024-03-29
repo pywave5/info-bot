@@ -12,4 +12,5 @@ SERVERS = [
     {"ip": "example.com", "port": 27016}
 ]
 
+# defines the delay time in seconds before messages are automatically deleted.
 AUTO_DELETE_DELAY_TIME = 300
