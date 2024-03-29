@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, Router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
@@ -8,18 +8,18 @@ from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramBadRequest
 
 from config import *
+from middleware import SubscriptionMiddleware
 from info import Ainfo
 
-bot = Bot(token=TOKEN_API, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-dp = Dispatcher()
+router = Router()
 
 info = Ainfo(SERVERS)
 
-@dp.message(CommandStart())
+@router.message(CommandStart())
 async def cmd_start(message: Message) -> None:
     await message.reply("/info")
 
-@dp.message(Command("info"))
+@router.message(Command("info"))
 async def cmd_info(message: Message) -> None:
     servers = await info.get_server_info(SERVERS)
     for server in servers:
@@ -37,14 +37,23 @@ async def cmd_info(message: Message) -> None:
 
         if AUTO_DELETE_DELAY_TIME > 0:
             await asyncio.sleep(AUTO_DELETE_DELAY_TIME)
-            await bot.delete_messages(
+            await message.bot.delete_messages(
                 chat_id=message.chat.id,
                 message_ids=[sent_message.message_id, message.message_id]
             )
 
 async def main() -> None:
+    bot = Bot(token=TOKEN_API, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    dp = Dispatcher()
+    dp.include_router(router)
+    dp.message.middleware(SubscriptionMiddleware())
+
     await bot.delete_webhook()
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+        print("Bot started...")
+    except KeyboardInterrupt:
+        print("Bot stopped!")

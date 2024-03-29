@@ -1,4 +1,3 @@
-from typing import List, Dict
 from html import escape
 from dataclasses import dataclass
 
@@ -11,7 +10,7 @@ IMAGE_URL = "https://image.gametracker.com/images/maps/160x120/cs/"
 
 @dataclass
 class Ainfo:
-    servers: List[Dict]
+    servers: list[dict]
 
     async def get_server_info(self, servers: list[dict]) -> list[dict]:
         answers = []
