@@ -1,10 +1,10 @@
 """
     info bot for your servers
     author: @pywave
-    version: 2.5.0
+    version: 2.5.1
 """
 
-TOKEN_API = "YOUR_BOT_TOKEN" # YOUR BOT TOKEN
+TOKEN_API = "" # YOUR BOT TOKEN
 
 # LIST YOUR GAME SERVERS
 SERVERS = [
