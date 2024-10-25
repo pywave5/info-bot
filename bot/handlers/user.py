@@ -5,7 +5,7 @@ from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
 from aiogram.exceptions import TelegramBadRequest
 
-from bot.handlers.info import Ainfo
+from bot.helpers.info import Ainfo
 from bot.handlers.admin import json_file_handler
 from config import *
 
