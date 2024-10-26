@@ -26,18 +26,18 @@ async def delete_info_messages(
 
 @user.message(CommandStart())
 async def cmd_start(message: Message) -> None:
-    await message.reply("/info")
+    await message.reply(server_info.data["start_message"].format(name=message.from_user.first_name))
 
 @user.message(Command("info"))
 async def cmd_info(message: Message) -> None:
     servers = await server_info.get_server_info(SERVERS)
     for server in servers:
         photo = server["image_url"]
-        caption = f"<b>Host:</b> <code>{server['host']}</code>\n" \
-                  f"<b>Server:</b> <code>{server['server_name']}</code>\n" \
-                  f"<b>Map:</b> <code>{server['map_name']}</code>\n" \
-                  f"<b>Players:</b> <code>{server['player_count']}/{server['max_players']}</code>\n" \
-                  f"<b>Bots:</b> <code>{server['bot_count']}</code>\n\n" \
+        caption = f"{server_info.data['host']} <code>{server['host']}</code>\n" \
+                  f"{server_info.data['server']} <code>{server['server_name']}</code>\n" \
+                  f"{server_info.data['map']} <code>{server['map_name']}</code>\n" \
+                  f"{server_info.data['players']} <code>{server['player_count']}/{server['max_players']}</code>\n" \
+                  f"{server_info.data['bots']} <code>{server['bot_count']}</code>\n\n" \
                   f"{server['players_caption']}"
 
         try:
@@ -55,14 +55,14 @@ async def get_commands(message: Message) -> None:
     data = await json_file_handler.load_commands()
 
     if not data:
-        await message.answer("Нет доступных команд.")
+        await message.answer(server_info.data['not_commands'])
         return
+    commands_list = "\n\n".join(
+        [server_info.data['new_command'].format(command=cmd_data['command'], description=cmd_data['description'])
+         for cmd_data in data.values()]
+    )
 
-    commands_list = "\n\n".join([f"<b>Команда:</b> {cmd_data['command']}\n"
-                                 f"<b>Описание:</b> {cmd_data['description']}"
-                                 for cmd_data in data.values()])
-
-    await message.answer(f"Доступные команды:\n\n{commands_list}")
+    await message.answer(f"{server_info.data['commands']}\n\n{commands_list}")
 
 @user.message(F.text.startswith("/"))
 async def answer_commands(message: Message) -> None:

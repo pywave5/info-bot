@@ -1,0 +1,12 @@
+{
+  "start_message": "Привет <code>{name}</code>\nВведите в чат /info",
+  "host": "<b>Хост</b>",
+  "server": "<b>Сервер</b>",
+  "map": "<b>Карта</b>",
+  "players": "<b>Игроки</b>",
+  "bots": "<b>Боты</b>",
+  "players_caption": "# | Ник | Счёт | Время",
+  "not_commands": "Нет доступных команд.",
+  "new_command": "<b>Команда:</b> {command}\n<b>Описание:</b> {description}",
+  "commands": "<b>Доступные команды:</b>"
+}

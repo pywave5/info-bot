@@ -1,5 +1,7 @@
+import json
 from html import escape
 from dataclasses import dataclass
+from pathlib import Path
 
 from a2s import ainfo, aplayers
 from cachetools import TTLCache
@@ -11,6 +13,10 @@ IMAGE_URL = "https://image.gametracker.com/images/maps/160x120/cs/"
 @dataclass
 class Ainfo:
     servers: list[dict]
+
+    file_path = Path(__file__).resolve().parent.parent / "data" / "bot_messages.json"
+    with open(file_path, "r", encoding="UTF-8") as file:
+        data = json.load(file)
 
     async def get_server_info(self, servers: list[dict]) -> list[dict]:
         answers = []
@@ -32,7 +38,7 @@ class Ainfo:
                 bot_count: int = result.bot_count
                 image_url: str = f"{IMAGE_URL}{map_name}.jpg"
 
-                players_caption = "# | Nick | Score | Time" if player_count > 0 else ""
+                players_caption = self.data['players_caption'] if player_count > 0 else ""
                 for idx, player in enumerate(players):
                     playerName = escape(s=player.name, quote=True)
                     playerTime = player.duration
