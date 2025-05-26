@@ -8,15 +8,6 @@
 [![Telegram Chat](https://img.shields.io/badge/chat-Telegram-blue?logo=telegram)](https://t.me/pywave)
 ![Downloads](https://img.shields.io/github/downloads/pywave5/info-bot/total?label=downloads)
 
----
-
-## Превью
-
-![Пример карты](https://image.gametracker.com/images/maps/160x120/cs/de_dust2.jpg)  
-*Бот отображает карту, название сервера, текущих игроков, счёт и многое другое.*
-
----
-
 ## Основные возможности
 
 - **Мониторинг GoldSrc-серверов (CS 1.6)** — показывает название, карту, игроков, пинг и другие параметры.
